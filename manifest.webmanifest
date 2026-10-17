@@ -1,0 +1,27 @@
+{
+	"id": "./",
+	"name": "筋トレメニュー作成",
+	"short_name": "筋トレメニュー",
+	"description": "部位と目標時間から筋トレメニューを作成・管理します。",
+	"lang": "ja",
+	"start_url": "./",
+	"scope": "./",
+	"display": "standalone",
+	"orientation": "portrait-primary",
+	"background_color": "#f4f5ef",
+	"theme_color": "#f4f5ef",
+	"icons": [
+		{
+			"src": "./icon-192.png",
+			"sizes": "192x192",
+			"type": "image/png",
+			"purpose": "any maskable"
+		},
+		{
+			"src": "./icon-512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any maskable"
+		}
+	]
+}

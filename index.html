@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f4f5ef">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<title>筋トレメニュー作成</title>
+	<link rel="manifest" href="./manifest.webmanifest">
+	<link rel="icon" href="./icon.svg" type="image/svg+xml">
+	<link rel="apple-touch-icon" href="./icon-180.png">
+	<link rel="stylesheet" href="./style.css">
+	<script src="./exercises.js" defer></script>
+	<script src="./app.js" defer></script>
+</head>
+<body>
+	<header class="topbar">
+		<a class="brand" href="#top" aria-label="筋トレメニュー作成 ホーム">
+			<span class="brand-mark" aria-hidden="true">W</span>
+			<span>WORKOUT<br><strong>LOCAL</strong></span>
+		</a>
+		<p class="offline-note"><span class="offline-dot" aria-hidden="true"></span>端末内で動作・保存</p>
+	</header>
+
+	<main id="top" class="app-shell">
+		<section class="intro" aria-labelledby="page-title">
+			<div>
+				<p class="eyebrow">YOUR DAILY TRAINING</p>
+				<h1 id="page-title">今日のメニューを<br><span>組み立てよう。</span></h1>
+			</div>
+			<div class="target-badge" aria-label="目標時間 40分">
+				<span class="target-number">40</span>
+				<span class="target-unit">MIN<br>目標時間</span>
+			</div>
+		</section>
+
+		<nav class="tabs" aria-label="画面切り替え">
+			<button class="tab-button is-active" type="button" data-view="planner" aria-selected="true">メニュー作成</button>
+			<button class="tab-button" type="button" data-view="manager" aria-selected="false">種目の管理</button>
+		</nav>
+
+		<p id="app-message" class="app-message" role="status" aria-live="polite" hidden></p>
+
+		<section id="planner-view" class="view" aria-labelledby="planner-title">
+			<div class="section-heading">
+				<div>
+					<p class="eyebrow">01 / PLAN</p>
+					<h2 id="planner-title">鍛えたい部位を選ぶ</h2>
+				</div>
+				<span class="heading-note">複数選択できます</span>
+			</div>
+
+			<fieldset class="body-part-options">
+				<legend class="visually-hidden">鍛えたい部位</legend>
+				<label class="part-option">
+					<input type="checkbox" name="body-part" value="足" checked>
+					<span class="part-icon" aria-hidden="true">01</span>
+					<span class="part-name">足</span>
+					<span class="part-check" aria-hidden="true"></span>
+				</label>
+				<label class="part-option">
+					<input type="checkbox" name="body-part" value="腕" checked>
+					<span class="part-icon" aria-hidden="true">02</span>
+					<span class="part-name">腕</span>
+					<span class="part-check" aria-hidden="true"></span>
+				</label>
+				<label class="part-option">
+					<input type="checkbox" name="body-part" value="腹" checked>
+					<span class="part-icon" aria-hidden="true">03</span>
+					<span class="part-name">腹</span>
+					<span class="part-check" aria-hidden="true"></span>
+				</label>
+			</fieldset>
+
+			<div class="planner-actions">
+				<p>登録済みの種目から、目標40分に近い組み合わせを作ります。</p>
+				<button id="generate-button" class="button button-primary" type="button">
+					<span aria-hidden="true">＋</span> メニューを作成
+				</button>
+			</div>
+
+			<section id="menu-result" class="menu-result" aria-labelledby="result-title" hidden>
+				<div class="section-heading result-heading">
+					<div>
+						<p class="eyebrow">02 / YOUR SESSION</p>
+						<h2 id="result-title">今日のメニュー</h2>
+					</div>
+					<p class="total-time"><strong id="total-time">0</strong><span>分</span></p>
+				</div>
+				<p id="menu-notice" class="menu-notice" role="status"></p>
+				<ol id="menu-list" class="menu-list"></ol>
+				<p class="duration-caption">時間は種目の運動目安とセット間休憩を合計した推定値です。</p>
+			</section>
+		</section>
+
+		<section id="manager-view" class="view" aria-labelledby="manager-title" hidden>
+			<div class="section-heading manager-heading">
+				<div>
+					<p class="eyebrow">EXERCISE LIBRARY</p>
+					<h2 id="manager-title">種目の管理</h2>
+				</div>
+				<button id="new-exercise-button" class="button button-secondary" type="button">＋ 種目を追加</button>
+			</div>
+
+			<form id="exercise-form" class="exercise-form" hidden>
+				<div class="form-heading">
+					<div>
+						<p class="eyebrow">EXERCISE DETAILS</p>
+						<h3 id="form-title">新しい種目</h3>
+					</div>
+					<button id="cancel-edit-button" class="button button-quiet" type="button">閉じる</button>
+				</div>
+				<input id="exercise-id" name="id" type="hidden">
+				<div class="form-grid">
+					<label class="field field-wide">
+						<span>種目名</span>
+						<input name="name" type="text" maxlength="60" required placeholder="例：スクワット">
+					</label>
+					<label class="field">
+						<span>対象部位</span>
+						<select name="bodyPart" required>
+							<option value="足">足</option>
+							<option value="腕">腕</option>
+							<option value="腹">腹</option>
+						</select>
+					</label>
+					<label class="field">
+						<span>器具</span>
+						<input name="equipment" type="text" maxlength="80" required placeholder="例：なし、水のボトル">
+					</label>
+					<label class="field">
+						<span>1セットの内容</span>
+						<div class="input-unit">
+							<input name="amount" type="number" min="1" max="9999" step="1" required>
+							<select name="unit" aria-label="回数または秒数">
+								<option value="回">回</option>
+								<option value="秒">秒</option>
+							</select>
+						</div>
+					</label>
+					<label class="field">
+						<span>セット数</span>
+						<div class="input-unit">
+							<input name="sets" type="number" min="1" max="20" step="1" required>
+							<span class="unit-label">セット</span>
+						</div>
+					</label>
+					<label class="field">
+						<span>セット間休憩</span>
+						<div class="input-unit">
+							<input name="restSeconds" type="number" min="0" max="900" step="1" required>
+							<span class="unit-label">秒</span>
+						</div>
+					</label>
+					<label class="field">
+						<span>運動時間の目安（休憩を除く）</span>
+						<div class="input-unit">
+							<input name="estimatedMinutes" type="number" min="0.5" max="300" step="0.5" required>
+							<span class="unit-label">分</span>
+						</div>
+					</label>
+					<label class="field field-wide">
+						<span>フォームの説明</span>
+						<textarea name="description" rows="3" maxlength="1000" required placeholder="安全に行うためのポイントを入力"></textarea>
+					</label>
+				</div>
+				<div class="form-footer">
+					<label class="toggle-field"><input name="enabled" type="checkbox" checked><span>メニュー候補として有効</span></label>
+					<button class="button button-primary" type="submit">保存する</button>
+				</div>
+			</form>
+
+			<div class="library-toolbar">
+				<p><strong id="exercise-count">0</strong> 種目 <span>・初期種目は編集・削除しても元データに影響しません</span></p>
+				<div class="backup-actions">
+					<button id="export-button" class="button button-quiet" type="button">JSONを書き出す</button>
+					<button id="import-button" class="button button-quiet" type="button">JSONを読み込む</button>
+					<input id="import-file" type="file" accept="application/json,.json" hidden>
+				</div>
+			</div>
+			<div id="exercise-list" class="exercise-list"></div>
+		</section>
+	</main>
+	<footer class="page-footer"><span>WORKOUT LOCAL</span><span>記録はこのブラウザ内に保存されます</span></footer>
+</body>
+</html>
